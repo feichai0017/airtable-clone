@@ -235,6 +235,57 @@ export const rowsRouter = createTRPCRouter({
       });
     }),
 
+  // Add bulk create endpoint to avoid order conflicts
+  bulkCreate: protectedProcedure
+    .input(z.object({
+      tableId: z.string(),
+      records: z.array(z.record(z.string(), z.string())),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const table = await ctx.db.table.findFirst({
+        where: { id: input.tableId },
+        include: {
+          base: true,
+          columns: true
+        }
+      });
+
+      if (!table || table.base.userId !== ctx.userId) {
+        throw new Error("Table not found");
+      }
+
+      return ctx.db.$transaction(async (tx) => {
+        // Get the current max order in a single query within transaction
+        const maxOrderRow = await tx.row.findFirst({
+          where: { tableId: input.tableId },
+          orderBy: { order: "desc" },
+        });
+
+        const startOrder = (maxOrderRow?.order ?? -1) + 1;
+
+        // Create all rows with sequential order values
+        const rowsToCreate = input.records.map((recordData, index) => {
+          const rowData: Record<string, string> = {};
+          table.columns.forEach(column => {
+            rowData[column.name] = recordData[column.name] || "";
+          });
+
+          return {
+            tableId: input.tableId,
+            order: startOrder + index,
+            data: rowData,
+          };
+        });
+
+        // Use createMany for better performance
+        await tx.row.createMany({
+          data: rowsToCreate,
+        });
+
+        return { created: rowsToCreate.length };
+      });
+    }),
+
   update: protectedProcedure
     .input(z.object({
       id: z.string(),

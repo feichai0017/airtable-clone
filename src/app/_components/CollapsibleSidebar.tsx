@@ -7,7 +7,8 @@ import {
     Users,
     Settings,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Globe
 } from "lucide-react";
 import { CreateBaseButton } from "./CreateBaseButton";
 
@@ -16,14 +17,20 @@ export function CollapsibleSidebar() {
 
     const navigationItems = [
         {
-            name: "Home",
-            href: "/",
+            name: "Dashboard",
+            href: "/dashboard",
             icon: Home,
             current: true,
         },
         {
-            name: "Dashboard",
-            href: "/dashboard",
+            name: "Homepage",
+            href: "/",
+            icon: Globe,
+            current: false,
+        },
+        {
+            name: "Team",
+            href: "/team",
             icon: Users,
             current: false,
         },

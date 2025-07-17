@@ -43,33 +43,15 @@ export const columnsRouter = createTRPCRouter({
         where: { tableId: input.tableId }
       });
 
-      return ctx.db.$transaction(async (tx) => {
-        // Create the column
-        const column = await tx.column.create({
-          data: {
-            name: input.name,
-            type: input.type,
-            tableId: input.tableId,
-            order: columnCount,
-          },
-        });
-
-        // Update all existing rows to add this column with empty value
-        const rows = await tx.row.findMany({
-          where: { tableId: input.tableId },
-        });
-
-        for (const row of rows) {
-          const currentData = row.data as Record<string, any>;
-          currentData[input.name] = ""; // Add empty value for new column
-          
-          await tx.row.update({
-            where: { id: row.id },
-            data: { data: currentData },
-          });
-        }
-
-        return column;
+      // Just create the column, don't update existing rows to avoid timeout
+      // The frontend will handle showing empty values for new columns
+      return ctx.db.column.create({
+        data: {
+          name: input.name,
+          type: input.type,
+          tableId: input.tableId,
+          order: columnCount,
+        },
       });
     }),
 
@@ -83,10 +65,10 @@ export const columnsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const column = await ctx.db.column.findFirst({
         where: { id: input.id },
-        include: { 
-          table: { 
-            include: { base: true } 
-          } 
+        include: {
+          table: {
+            include: { base: true }
+          }
         }
       });
 
@@ -109,10 +91,10 @@ export const columnsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const column = await ctx.db.column.findFirst({
         where: { id: input.id },
-        include: { 
-          table: { 
-            include: { base: true } 
-          } 
+        include: {
+          table: {
+            include: { base: true }
+          }
         }
       });
 

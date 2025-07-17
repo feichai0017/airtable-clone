@@ -4,3 +4,166 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+/* Custom utility classes */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
+
+/* Excel-style tab hover effects */
+.tab-hover-effect:hover {
+  transform: translateY(-1px);
+  transition: transform 0.1s ease-in-out;
+}
+
+/* Table enhancements */
+.table-cell {
+  position: relative;
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+}
+
+.table-cell:hover {
+  background-color: #f9fafb;
+}
+
+.table-cell.selected {
+  background-color: #dbeafe;
+  box-shadow: 0 0 0 2px #3b82f6 inset;
+}
+
+.table-cell.editing {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px #3b82f6;
+  z-index: 10;
+}
+
+/* Row and column selection */
+.row-selected {
+  background-color: #eff6ff !important;
+}
+
+.column-selected {
+  background-color: #eff6ff !important;
+}
+
+/* Cell edit animations */
+@keyframes cellEditIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cellEditOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.cell-edit-enter {
+  animation: cellEditIn 0.15s ease-out;
+}
+
+.cell-edit-exit {
+  animation: cellEditOut 0.1s ease-in;
+}
+
+/* Context menu animations */
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.context-menu {
+  animation: menuSlideIn 0.15s ease-out;
+}
+
+/* Loading shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Button hover effects */
+.btn-hover-lift {
+  transition: all 0.2s ease;
+}
+
+.btn-hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Status indicators */
+.status-modified {
+  position: relative;
+}
+
+.status-modified::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background-color: #f59e0b;
+  border-radius: 50%;
+}
+
+.status-error::after {
+  background-color: #ef4444;
+}
+
+.status-saving::after {
+  background-color: #3b82f6;
+  animation: pulse 1.5s infinite;
+}
+
+/* Focus styles */
+.table-focus-ring {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+/* Resize cursor */
+.resize-handle {
+  cursor: col-resize;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.resize-handle:hover {
+  background-color: #3b82f6;
+}
